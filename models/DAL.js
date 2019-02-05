@@ -21,6 +21,7 @@ client.ping({
 });
 
 //Acessible Queries
+/*
 client.index({
     index: 'blog',
     id: '1',
@@ -32,4 +33,15 @@ client.index({
     }
 }, function(err, resp, status) {
     console.log(resp);
+});
+*/
+
+client.search({
+    index: 'logs',
+    type: 'posts',
+    q: 'PostName:Node.js'
+}).then(function(resp) {
+    console.log(resp);
+}, function(err) {
+    console.trace(err.message);
 });
