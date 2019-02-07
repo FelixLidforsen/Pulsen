@@ -1,3 +1,6 @@
+var fs = require('fs');
+var readme = fs.readFileSync('readme.txt', 'utf8');
+
 var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -10,7 +13,7 @@ var transporter = nodemailer.createTransport({
 console.log('created');
 transporter.sendMail({
 from: 'pulsenfelrapport@gmail.com',
-  to: 'agnes.ekfors@hotmail.com',
+  to: readme,
   subject: 'SECURITY ALERT',
   text: 'Din app e knas bror'
 });
