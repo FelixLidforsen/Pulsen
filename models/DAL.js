@@ -1,6 +1,7 @@
 var fs = require('fs');
 var elasticsearch = require('elasticsearch');
 
+
 var readFile = fs.readFileSync('assets/loginCredentials.json', 'utf8');
 var jsonContent = JSON.parse(readFile);
 
@@ -21,15 +22,33 @@ client.ping({
 });
 
 //Acessible Queries
+/*
 client.index({
-    index: 'blog',
+    index: 'errorlogs',
     id: '1',
     type: 'posts',
     body: {
-        "PostName": "Integrating Elasticsearch Into Your Node.js Application",
-        "PostType": "Tutorial",
-        "PostBody": "This is the text of our tutorial about using Elasticsearch in your Node.js application.",
+        "PostName": "Error Log",
+        "PostType": "Log",
+        "PostBody": "This is an Error Log.",
     }
 }, function(err, resp, status) {
     console.log(resp);
 });
+*/
+module.exports = {
+clientsearcher: client.search({
+    index: 'errorlogs',
+    type: 'posts',
+    q: 'PostType:Log'
+}).then(function(resp) {
+    console.log("test");
+    if((resp.hits.max_score)!=null){
+        //Fire Controller function
+    }
+}, function(err) {
+    console.trace(err.message);
+}),
+};
+
+
