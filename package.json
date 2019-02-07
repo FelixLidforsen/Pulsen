@@ -4,6 +4,7 @@
   "description": "An alerts app for ELK using nodeJs",
   "main": "app.js",
   "dependencies": {
+    "elastic": "^0.1.10",
     "elasticsearch": "^15.3.1",
     "eslint": "^5.13.0",
     "nodemailer": "^5.1.1"
