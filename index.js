@@ -3,11 +3,11 @@ var fs = require('fs');
 var elasticsearch = require('elasticsearch');
 var response;
 
-//Method and Variable for reading login information
+//Method and Variable for reading login information (REDUNDANT: merge with below function for optimisation)
 var readFile = fs.readFileSync('./models/assets/loginCredentials.json', 'utf8');
 var jsonContent = JSON.parse(readFile);
 
-//Method and Variable for reading properties file
+//Method and Variable for reading properties file (REDUNDANT: merge with above function for optimisation)
 var readProperties = fs.readFileSync('./models/assets/properties.json', 'utf8');
 var jsonContent2 = JSON.parse(readProperties);
 
@@ -21,9 +21,9 @@ client.ping({
     requestTimeout: 30000,
 }, function(error) {
     if (error) {
-        console.error('elasticsearch cluster is down!');
+        console.error('Could not connect to Elasticsearch!');
     } else {
-        console.log('Connection established sucessfully');
+        console.log('Connection established sucessfully!');
     }
 });
 
