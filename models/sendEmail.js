@@ -15,5 +15,5 @@ transporter.sendMail({
 from: 'pulsenfelrapport@gmail.com',
   to: readme,
   subject: 'SECURITY ALERT',
-  text: 'Din app e knas bror'
+  text: 'Ett fel har inträffat'
 });
