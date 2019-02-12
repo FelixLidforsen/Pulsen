@@ -1,8 +1,10 @@
 var fs = require('fs');
 var elasticsearch = require('elasticsearch');
+var controller = require('../controllers/controller.js');
 
 
-var readFile = fs.readFileSync('assets/loginCredentials.json', 'utf8');
+var responseObject;
+var readFile = fs.readFileSync('../models/assets/loginCredentials.json', 'utf8');
 var jsonContent = JSON.parse(readFile);
 
 //Create a client for connecting to Elastisearch
@@ -41,14 +43,12 @@ clientsearcher: client.search({
     index: 'errorlogs',
     type: 'posts',
     q: 'PostType:Log'
-}).then(function(resp) {
-    console.log("test");
-    if((resp.hits.max_score)!=null){
-        //Fire Controller function
-    }
-}, function(err) {
-    console.trace(err.message);
-}),
+}).then(function(resp){
+    responseObject = resp;
+    function sendResponse(responseObject){
+        controller.responseReader(responseObject);
+    }    
+}), 
 };
 
 
