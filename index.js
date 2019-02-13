@@ -62,9 +62,9 @@ function mailService(){
     //Parameters can be pulled from properties file using jsonContent.xxx
     var message = {
       from: "pulsen@erikgullberg.se",
-      to: jsonContent.email,
+      to: jsonContent2.email,
       subject: "Alert! Error found!",
-      text: "Hello " + jsonContent.name + " AlertsAlot has detected an error log."
+      text: "Hello " + jsonContent2.name + " AlertsAlot has detected an error log."
     };
     
     //Send the mail using the transporter and message
