@@ -3,6 +3,7 @@ var fs = require('fs');
 var elasticsearch = require('elasticsearch');
 var nodemailer = require('nodemailer');
 var dateAndTime = new Date();
+var repsonseObject;
 
 //Method and Variable for reading login information
 var readFile = fs.readFileSync('./models/assets/loginCredentials.json', 'utf8');
@@ -35,6 +36,7 @@ client.search({
     q: 'PostType:Log'
 }).then(function(resp){ 
     if (resp.hits.max_score != null && resp.hits.total != 0){
+        repsonseObject = resp;
         console.log("I found an error log");
         mailService();
     }else{
@@ -67,7 +69,8 @@ function mailService(){
       from: "pulsen@erikgullberg.se",
       to: jsonContent2.email,
       subject: "AlertsAlot: Error log found!",
-      text: "Hello " + jsonContent2.name + " AlertsAlot has detected" + resp.hits.total + "error log(s). \n"
+      text: "Hello " + jsonContent2.name + ". \n \n"
+      + "AlertsAlot has detected " + repsonseObject.hits.total + " error log(s). \n"
       + "The log was found on " + dateAndTime + ". \n"
       + "Please check your elasticsearch database."
     };
