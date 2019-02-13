@@ -1,13 +1,13 @@
 //Declare dependencies
 var fs = require('fs');
 var elasticsearch = require('elasticsearch');
-var response;
+var nodemailer = require('nodemailer');
 
-//Method and Variable for reading login information (REDUNDANT: merge with below function for optimisation)
+//Method and Variable for reading login information
 var readFile = fs.readFileSync('./models/assets/loginCredentials.json', 'utf8');
 var jsonContent = JSON.parse(readFile);
 
-//Method and Variable for reading properties file (REDUNDANT: merge with above function for optimisation)
+//Method and Variable for reading properties file
 var readProperties = fs.readFileSync('./models/assets/properties.json', 'utf8');
 var jsonContent2 = JSON.parse(readProperties);
 
@@ -35,6 +35,7 @@ client.search({
 }).then(function(resp){ 
     if (resp.hits.max_score != null && resp.hits.total != 0){
         console.log("I found an error log");
+        mailService();
     }else{
         console.log("No Error logs found");
     }
@@ -42,5 +43,35 @@ client.search({
     console.log("An error occured while executing a query in Elasticsearch. The following row contains trace information..")
     console.trace(err.message);
 });
+
+//Function to send mail
+function mailService(){
+
+    //Create a transport for Nodemailer
+    var transporter = nodemailer.createTransport({
+      host: "send.one.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user:"pulsen@erikgullberg.se",
+        pass:"felix123"
+      }
+    });
+    
+    //Define Message options
+    //Parameters can be pulled from properties file using jsonContent.xxx
+    var message = {
+      from: "pulsen@erikgullberg.se",
+      to: jsonContent.email,
+      subject: "Alert! Error found!",
+      text: "Hello " + jsonContent.name + " AlertsAlot has detected an error log."
+    };
+    
+    //Send the mail using the transporter and message
+    //Running this function immeadiatly sned a mail to the end user
+    //Do NOT loop this function too frequently!
+    transporter.sendMail(message);
+
+};
 
 
