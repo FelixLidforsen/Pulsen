@@ -2,6 +2,7 @@
 var fs = require('fs');
 var elasticsearch = require('elasticsearch');
 var nodemailer = require('nodemailer');
+var dateAndTime = new Date();
 
 //Method and Variable for reading login information
 var readFile = fs.readFileSync('./models/assets/loginCredentials.json', 'utf8');
@@ -44,10 +45,12 @@ client.search({
     console.trace(err.message);
 });
 
-//Function to send mail
+//Function to create and send mail using Nodemailer.
+//Running this function immediatly sends a mail to the end user
+//Do NOT loop this function too frequently!
 function mailService(){
 
-    //Create a transport for Nodemailer
+    //Create a transport for Nodemailer using SMTP
     var transporter = nodemailer.createTransport({
       host: "send.one.com",
       port: 587,
@@ -59,17 +62,17 @@ function mailService(){
     });
     
     //Define Message options
-    //Parameters can be pulled from properties file using jsonContent.xxx
+    //Parameters can be pulled from properties file using jsonContent2.xxx
     var message = {
       from: "pulsen@erikgullberg.se",
       to: jsonContent2.email,
-      subject: "Alert! Error found!",
-      text: "Hello " + jsonContent2.name + " AlertsAlot has detected an error log."
+      subject: "AlertsAlot: Error log found!",
+      text: "Hello " + jsonContent2.name + " AlertsAlot has detected" + resp.hits.total + "error log(s). \n"
+      + "The log was found on " + dateAndTime + ". \n"
+      + "Please check your elasticsearch database."
     };
     
     //Send the mail using the transporter and message
-    //Running this function immeadiatly sned a mail to the end user
-    //Do NOT loop this function too frequently!
     transporter.sendMail(message);
 
 };
