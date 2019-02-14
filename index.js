@@ -1,4 +1,4 @@
-//Declare dependencies
+//Declare dependencies and variables
 var fs = require('fs');
 var elasticsearch = require('elasticsearch');
 var nodemailer = require('nodemailer');
@@ -32,7 +32,7 @@ client.ping({
     }
 });
 
-setTimeout(alertsAlot, 10000);
+setInterval(alertsAlot, 10000);
 
 function alertsAlot(){
 
@@ -75,18 +75,26 @@ client.search({
         };
         
         //compareArrays()
-        //Take the values of both arrays and sort them.
-        //Compare the sorted arrays and return a boolean
+        //Takes the values of both arrays, filter and sorts them.
+        //Compares the sorted arrays and returns a boolean
         function compareArrays(elasticQueryIDs, errorLogIDs){
-        elasticQueryIDs.map( function (x){ return x._id; } ).sort();
-        errorLogIDs.map( function (x){ return x._id; } ).sort();
+        elasticQueryIDs.map( function (x){ return x._id; } ).filter(onlyUnique).sort();
+        errorLogIDs.map( function (x){ return x._id; } ).filter(onlyUnique).sort();
         return (elasticQueryIDs.join(',') == errorLogIDs.join(','));
         };
+
+        //onlyUnique()
+        //Filters the array to only unique values
+        function onlyUnique(value, index, self) { 
+            return self.indexOf(value) === index;
+        }
 
     }else{
         console.log("No Error logs found");
     }
-}, function(err) {
+}, 
+    //If the query returns an error
+    function(err) {
     console.log("An error occured while executing a query in Elasticsearch. The following row contains trace information..")
     console.trace(err.message);
 });
