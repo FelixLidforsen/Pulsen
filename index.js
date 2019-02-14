@@ -32,6 +32,10 @@ client.ping({
     }
 });
 
+setTimeout(alertsAlot, 10000);
+
+function alertsAlot(){
+
 //Execute Query for error logs in elasticsearch
 client.search({
     index: 'errorlogs',
@@ -86,7 +90,7 @@ client.search({
     console.log("An error occured while executing a query in Elasticsearch. The following row contains trace information..")
     console.trace(err.message);
 });
-
+};
 //Function to create and send mail using Nodemailer.
 //Running this function immediatly sends a mail to the end user
 //Do NOT loop this function too frequently!
