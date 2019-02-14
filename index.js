@@ -5,8 +5,8 @@ var nodemailer = require('nodemailer');
 var dateAndTime = new Date();
 var responseObject;
 var errorLogIDs = [];
-var newLogs;
 var elasticQueryData = [];
+var newLogs;
 
 //Method and Variable for reading login information
 var readFile = fs.readFileSync('./models/assets/loginCredentials.json', 'utf8');
@@ -16,7 +16,7 @@ var jsonContent = JSON.parse(readFile);
 var readProperties = fs.readFileSync('./models/assets/properties.json', 'utf8');
 var jsonContent2 = JSON.parse(readProperties);
 
-//Create a client for connecting to Elastisearch and read host information from properties
+//Create a client for connecting to Elastisearch and read host information from loginCredentials
 var client = new elasticsearch.Client({
    hosts: [ jsonContent.hosts ]
 });
@@ -32,6 +32,7 @@ client.ping({
     }
 });
 
+//Set interval to repeat alertsAlot
 setInterval(alertsAlot, 10000);
 
 function alertsAlot(){
@@ -42,7 +43,7 @@ client.search({
     type: 'posts',
     q: 'PostType:Log'
 }).then(function(resp){
-    //Code below triggers if something was found 
+    //Check if the query found something 
     if (resp.hits.max_score != null && resp.hits.total != 0){
         console.log("AlertsAlot found an error log");
         responseObject = resp;
@@ -52,19 +53,19 @@ client.search({
         resp.hits.hits.forEach(element => {
             elasticQueryIDs.push(element._id);
         });
-
+        
+        //Loop through the array of found objects and add to array
         resp.hits.hits.forEach(element => {
            elasticQueryData.push("--Start of file-- \n"); 
            elasticQueryData.push(JSON.stringify(element._source));
            elasticQueryData.push("\n--End of file--");
         });
 
-
         //Run compareArrays()
         //If the contents of the arrays do not match: add and save the found id:s. Then trigger sendMail()
         //Declare newLogs as the new number of logs
         if (compareArrays(elasticQueryIDs, errorLogIDs) == false){
-            newLogs = parseInt(responseObject.hits.total) - errorLogIDs.length
+            newLogs =  elasticQueryIDs.length - errorLogIDs.lengths;
             resp.hits.hits.forEach(element => {
                 errorLogIDs.push(element._id);
             })
@@ -99,6 +100,7 @@ client.search({
     console.trace(err.message);
 });
 };
+
 //Function to create and send mail using Nodemailer.
 //Running this function immediatly sends a mail to the end user
 //Do NOT loop this function too frequently!
@@ -115,8 +117,8 @@ function mailService(){
       }
     }); 
     
-    //Define Message options
-    //Parameters can be pulled from properties file using jsonContent2.xxx
+    //Define message options
+    //User information can be pulled from properties file using jsonContent2.xxx
     var message = {
       from: "pulsen@erikgullberg.se",
       to: jsonContent2.email,
