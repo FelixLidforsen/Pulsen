@@ -5,8 +5,9 @@ var nodemailer = require('nodemailer');
 var dateAndTime = new Date();
 var responseObject;
 var errorLogIDs = [];
-var newLogs;
 var elasticQueryData = [];
+var newLogs;
+
 
 //Method and Variable for reading login information
 var readFile = fs.readFileSync('./models/assets/loginCredentials.json', 'utf8');
@@ -121,7 +122,7 @@ function mailService(){
       from: "pulsen@erikgullberg.se",
       to: jsonContent2.email,
       subject: "AlertsAlot: Error log(s) found!!",
-      text: "Hello " + jsonContent2.name + ". \n \n"
+      text: "Hello " + jsonContent2.name + ". \n"
       + "AlertsAlot has detected " + newLogs + " error log(s). \n"
       + "The log(s) were found on " + dateAndTime + ". \n"
       + "The log(s) contain(s) the following data: \n"
