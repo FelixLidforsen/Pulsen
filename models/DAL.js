@@ -24,20 +24,26 @@ client.ping({
 });
 
 //Acessible Queries
-/*
 client.index({
-    index: 'errorlogs',
-    id: '1',
-    type: 'posts',
-    body: {
-        "PostName": "Error Log",
-        "PostType": "Log",
-        "PostBody": "This is an Error Log.",
-    }
-}, function(err, resp, status) {
-    console.log(resp);
-});
-*/
+
+                index: "log",
+                type: "doc",
+                id: "a2e68ea94c543757a01d26cfd1a475439eb159a7d0d52ba63bb639c6f8980cc1",
+                body: {
+                    id: "Server2",
+                    text: "debug1",
+                    version: "1",
+                    level: "DEBUG",
+                    timestamp: "2019-02-18T11:00:08.775Z",
+                    date: "2018-01-16T08:06:29.858+01:00",
+                    message: "[Server2] [DEBUG] [2018-01-16T08:06:29.858+01:00] - debug1"
+                }
+            }
+
+
+
+);
+
 module.exports = {
 clientsearcher: client.search({
     index: 'errorlogs',

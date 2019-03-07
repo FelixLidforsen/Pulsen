@@ -34,9 +34,9 @@ client.ping({
 
 //Execute Query for error logs in elasticsearch
 client.search({
-    index: 'errorlogs',
-    type: 'posts',
-    q: 'PostType:Log'
+    index: 'log',
+    type: 'doc',
+    q: 'level:DEBUG'
 }).then(function(resp){
     //Code below triggers if something was found 
     if (resp.hits.max_score != null && resp.hits.total != 0){
