@@ -68,6 +68,7 @@ client.search({
             newLogs =  elasticQueryIDs.length - errorLogIDs.lengths;
             resp.hits.hits.forEach(element => {
                 errorLogIDs.push(element._id);
+                errorLogIDs.filter(onlyUnique);
             })
             console.log("A new error log ID has been found. Sending a mail");
             mailService();
