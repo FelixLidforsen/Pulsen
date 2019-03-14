@@ -39,10 +39,20 @@ function alertsAlot(){
 
 //Execute Query for error logs in elasticsearch
 client.search({
-    index: 'log',
-    type: 'doc',
-    q: 'level:ERROR'
-}).then(function(resp){
+    index: 'logs',
+        type: 'doc',
+        body: {
+            sort: [
+                { date : {order : "desc"}}
+            ],
+            size: 100,
+            query: {
+                match : {
+                    level : "ERROR"
+                }
+            }
+        }
+    }).then(function(resp){
     //Check if the query found something 
     if (resp.hits.max_score != null && resp.hits.total != 0){
         console.log("AlertsAlot found an error log");
@@ -61,7 +71,7 @@ client.search({
             newLogs = elasticQueryIDs.length - errorLogIDs.lengths;
             resp.hits.hits.forEach(element => {
                 errorLogIDs.push(element._id);
-                errorLogIDs.filter(onlyUnique);
+                errorLogIDs = [...new Set(errorLogIDs)];
             })
 
             if(resp.hits.total <= 20){
@@ -77,8 +87,10 @@ client.search({
                 elasticQueryData = [];
                 elasticQueryData.push("//The number of found logs exceeds 20. \n //Displaying individual log messages disabled.")
             };
+
             console.log("A new error log ID has been found. Sending a mail");
             mailService();
+
         }else{
             console.log("Found error logs with a previously alerted ID. A mail has not been sent");
         };
@@ -87,16 +99,16 @@ client.search({
         //Takes the values of both arrays, filter and sorts them.
         //Compares the sorted arrays and returns a boolean
         function compareArrays(elasticQueryIDs, errorLogIDs){
-        elasticQueryIDs.map( function (x){ return x._id; } ).filter(onlyUnique).sort();
-        errorLogIDs.map( function (x){ return x._id; } ).filter(onlyUnique).sort();
-        return (elasticQueryIDs.join(',') == errorLogIDs.join(','));
+        var uniqueArray1 = [...new Set(elasticQueryIDs)];
+        var uniqueArray2 = [...new Set(errorLogIDs)];
+        return (uniqueArray1.join(',') == uniqueArray2.join(','));
         };
 
         //onlyUnique()
         //Filters the array to only unique values
-        function onlyUnique(value, index, self) { 
-            return self.indexOf(value) === index;
-        }
+        //  function onlyUnique(value, index, self) { 
+        //    return self.indexOf(value) === index;
+         // }
 
     }else{
         console.log("No Error logs found");
