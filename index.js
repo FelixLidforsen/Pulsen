@@ -53,23 +53,30 @@ client.search({
         resp.hits.hits.forEach(element => {
             elasticQueryIDs.push(element._id);
         });
-        
-        //Loop through the array of found objects and add to array
-        resp.hits.hits.forEach(element => {
-           elasticQueryData.push("--Start of file-- \n"); 
-           elasticQueryData.push(JSON.stringify(element._source));
-           elasticQueryData.push("\n--End of file--");
-        });
 
         //Run compareArrays()
         //If the contents of the arrays do not match: add and save the found id:s. Then trigger sendMail()
         //Declare newLogs as the new number of logs
         if (compareArrays(elasticQueryIDs, errorLogIDs) == false){
-            newLogs =  elasticQueryIDs.length - errorLogIDs.lengths;
+            newLogs = elasticQueryIDs.length - errorLogIDs.lengths;
             resp.hits.hits.forEach(element => {
                 errorLogIDs.push(element._id);
                 errorLogIDs.filter(onlyUnique);
             })
+
+            if(resp.hits.total <= 20){
+                //If the number of found elements is below or equal 20
+                //Loop through the array of found objects and add to array
+                resp.hits.hits.forEach(element => {
+                elasticQueryData = [];
+                elasticQueryData.push("--Start of file-- \n"); 
+                elasticQueryData.push(JSON.stringify(element._source));
+                elasticQueryData.push("\n--End of file--");
+            });
+            }else{
+                elasticQueryData = [];
+                elasticQueryData.push("//The number of found logs exceeds 20. \n //Displaying individual log messages disabled.")
+            };
             console.log("A new error log ID has been found. Sending a mail");
             mailService();
         }else{
