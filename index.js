@@ -39,9 +39,9 @@ function alertsAlot(){
 
 //Execute Query for error logs in elasticsearch
 client.search({
-    index: 'errorlogs',
-    type: 'posts',
-    q: 'PostType:Log'
+    index: 'log',
+    type: 'doc',
+    q: 'level:ERROR'
 }).then(function(resp){
     //Check if the query found something 
     if (resp.hits.max_score != null && resp.hits.total != 0){
