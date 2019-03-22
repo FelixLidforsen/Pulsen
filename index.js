@@ -128,7 +128,7 @@ function mailService(){
     var message = {
       from: "pulsen@erikgullberg.se",
       to: jsonContent2.email,
-      subject: "AlertsAlot: Error log(s) found!!",
+      subject: "AlertsAlot: Error log found!",
       text: "Hello " + jsonContent2.name + ". \n"
       + "AlertsAlot has detected " + newLogs + " error log(s). \n"
       + "The log(s) were found on " + dateAndTime + ". \n"
