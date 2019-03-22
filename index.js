@@ -34,11 +34,9 @@ client.ping({
 
 //Set interval to repeat alertsAlot
 setInterval(alertsAlot, 10000);
-//var incrementalINT = 0;
+
 function alertsAlot(){
 
-    //errorLogIDs.push(incrementalINT);
-    //incrementalINT ++;
 //Execute Query for error logs in elasticsearch
 client.search({
     index: 'errorlogs',
