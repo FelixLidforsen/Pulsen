@@ -34,24 +34,16 @@ client.ping({
 
 //Set interval to repeat alertsAlot
 setInterval(alertsAlot, 10000);
-
+//var incrementalINT = 0;
 function alertsAlot(){
 
+    //errorLogIDs.push(incrementalINT);
+    //incrementalINT ++;
 //Execute Query for error logs in elasticsearch
 client.search({
-    index: 'logs',
-        type: 'doc',
-        body: {
-            sort: [
-                { date : {order : "desc"}}
-            ],
-            size: 100,
-            query: {
-                match : {
-                    level : "ERROR"
-                }
-            }
-        }
+    index: 'errorlogs',
+    type: 'posts',
+    q: 'PostType:Log'
     }).then(function(resp){
     //Check if the query found something 
     if (resp.hits.max_score != null && resp.hits.total != 0){
@@ -68,10 +60,11 @@ client.search({
         //If the contents of the arrays do not match: add and save the found id:s. Then trigger sendMail()
         //Declare newLogs as the new number of logs
         if (compareArrays(elasticQueryIDs, errorLogIDs) == false){
-            newLogs = elasticQueryIDs.length - errorLogIDs.lengths;
+            newLogs = elasticQueryIDs.length - errorLogIDs.length;
             resp.hits.hits.forEach(element => {
                 errorLogIDs.push(element._id);
                 errorLogIDs = [...new Set(errorLogIDs)];
+                
             })
 
             if(resp.hits.total <= 20){
@@ -93,6 +86,7 @@ client.search({
 
         }else{
             console.log("Found error logs with a previously alerted ID. A mail has not been sent");
+            
         };
         
         //compareArrays()
@@ -103,12 +97,6 @@ client.search({
         var uniqueArray2 = [...new Set(errorLogIDs)];
         return (uniqueArray1.join(',') == uniqueArray2.join(','));
         };
-
-        //onlyUnique()
-        //Filters the array to only unique values
-        //  function onlyUnique(value, index, self) { 
-        //    return self.indexOf(value) === index;
-         // }
 
     }else{
         console.log("No Error logs found");
