@@ -3,7 +3,6 @@ var fs = require('fs');
 var elasticsearch = require('elasticsearch');
 var nodemailer = require('nodemailer');
 var dateAndTime = new Date();
-var responseObject;
 var errorLogIDs = [];
 var elasticQueryData = [];
 var newLogs;
